@@ -1,0 +1,45 @@
+body {
+    background-color: lightgrey;
+    display: grid;
+    justify-content: center;
+}
+.grid-container {
+    background-color: whitesmoke;
+   display: grid;
+   margin-top: 20px;
+   width: 500px;
+   height: 600px;
+   border: 2px solid white ;
+   border-radius: 5px;
+   grid-template-rows: 100px  496px;
+}
+
+
+.title {
+    text-align: center;
+    grid-row: 1;
+    background-color: #0DEEC9;
+}
+
+.todo {
+    
+    grid-row: 2;
+    margin: 10px 10px 10px 10px;
+    
+}
+
+.btn-add {
+    float: right;
+}
+.firstinput {
+    width: 325px;
+     float: "left";
+}
+
+.nav1 {
+    cursor: pointer;
+    
+}
+.nav1 :hover {
+    background-color: #bdbdbd;
+}
