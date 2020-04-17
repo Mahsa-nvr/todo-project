@@ -25,6 +25,7 @@ class Alarm extends React.Component{
                     top: -100,
                 })
             }, 5000)
+           
         })
         
     }
@@ -46,7 +47,7 @@ class Alarm extends React.Component{
                 zIndex: 100,
                 transition: "top 0.5s ease",
                 width:"300px",
-                marginRight: "510px",
+                marginRight: "246px",
                 borderRadius: "3px"
            }}>Welcome To App</div>
            </React.Fragment>

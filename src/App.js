@@ -3,6 +3,7 @@ import {  Row,  Input, Button, ListGroup, ListGroupItem} from 'reactstrap';
 import {HandleChange, Icon} from './Utility';
 import swal from 'sweetalert';
 import Alarm from './Alarm';
+import Complete from './Complete';
 
 class App extends React.Component {
    constructor(props) {
@@ -11,9 +12,9 @@ class App extends React.Component {
        top: -100,
        inputNew: '',
        data: [
-         {id:1, title:"meet mr.jack of all trads"},
-         {id:2, title:"being at my best mood"},
-         {id:2, title:"thinking about cosmos absurdity"}
+         {id:1, title:"meet mr.jack of all trads", checked: false, status: false},
+         {id:2, title:"being at my best mood", checked: false, status: false},
+         {id:2, title:"thinking about cosmos absurdity", checked: false, status: false}
        ]
      }
    }
@@ -24,7 +25,7 @@ class App extends React.Component {
      this.setState(prevState => {
       return {
         inputNew: '',
-        data: [...prevState.data , {id: prevState.data.lenght + 1, title: prevState.inputNew}]
+        data: [...prevState.data , {id: prevState.data.lenght + 1, title: prevState.inputNew, checked: false, status: false}]
       } 
      })
    }else(alert("please enter character"))
@@ -67,15 +68,37 @@ class App extends React.Component {
      })
    }
   
- 
+   handleChecked = (index) => {
+     this.setState(prevState => {
+       let NewData = [...prevState.data]
+       NewData[index].checked = true
+       return {
+         data : NewData
+       }
+     }, () => {
+      setTimeout(() => {
+       this.setState(prevState =>{
+        let NewData = [...prevState.data]
+        NewData[index].status = true
+        return {
+          data : NewData
+        }
+       })
+       }, 5000);        
+     }
+     
+     )}
 
+
+     
 
   render() {
-    
+     
     return (
-     <React.Fragment>
-       
+     <React.Fragment>    
        <div className="grid-container">
+       <div><Complete data={this.state.data}/></div>
+            <div className="column2">
             <div className="title"><div><Alarm/></div><h1 style={{color:"white" }}>Todo List</h1></div>
                <div className="todo">
 
@@ -92,21 +115,29 @@ class App extends React.Component {
                        <ListGroup>
                          
                          {
-                           this.state.data.map((el, index) => {                            
-                             return <ListGroupItem key={index}  style={{marginBottom:"5px", padding:"7px"}}>
-                                        <input type="checkbox" style={{marginRight:"7px", marginTop:"11px"}}></input>
+                           this.state.data.map((el, index) => {    
+                             if(!el.checked)
+                             {                                          
+                             return (<ListGroupItem key={index} className='group-item3'>
+                                       
+                                        <input type="checkbox" onChange={this.handleChecked.bind(this, index)} checked={el.checked} style={{marginRight:"7px", marginTop:"11px"}}></input>
                                         {el.title}
                                         <Button onClick={this.delete.bind(this, index)} className="float-right" style={{marginLeft:"5px"}} color="danger" children={<Icon icon={'trash'}/>}/>
                                         <Button onClick={this.edit.bind(this, index)} className="float-right" style={{marginLeft:"5px"}} color="info" children={<Icon icon={'pencil'}/>}/>
-                                    </ListGroupItem> 
+                                              
+                                        </ListGroupItem>)
+                                        
+                           } else{
+                             return null
+                           }
                            })
+                           
                          }
                          
                        </ListGroup>                     
-                 </div>             
-                
-               
+                 </div>                            
                </div>
+              </div>
               </div>
 
               <div style={{
