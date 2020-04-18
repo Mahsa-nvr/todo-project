@@ -11,25 +11,62 @@ class App extends React.Component {
      this.state = {
        top: -100,
        inputNew: '',
+       deadTime:'',
        data: [
-         {id:1, title:"meet mr.jack of all trads", checked: false, status: false},
-         {id:2, title:"being at my best mood", checked: false, status: false},
-         {id:2, title:"thinking about cosmos absurdity", checked: false, status: false}
+         {id:1, title:"meet mr.jack of all trads", checked: false, status: false, dueTime:'' },
+         {id:2, title:"being at my best mood", checked: false, status: false, dueTime:''},
+         {id:2, title:"thinking about cosmos absurdity", checked: false, status: false, dueTime: ''}
        ]
      }
    }
 
+ 
+   componentDidMount() {
+     setInterval(this.calcuteTime, 1000)
+   }
+
+   calcuteTime = () => {
+     let currentTime = new Date().toTimeString().split(" ")[0]
+     let str1 = currentTime.split(":")[0] * 3600 + currentTime.split(":")[1] * 60 + currentTime.split(":")[2];
+
+      this.state.data.map((el, index) => {
+         let endTime = el.dueTime;
+         let str2= endTime.split(":")[0] * 3600 + endTime.split(":")[1] * 60 + endTime.split(":")[2];
+        //  console.log(str1, str2)
+         if(str1 === str2){
+            // console.log('equal')
+           return ( this.setState( prevState => {
+              let NewData = [...prevState.data]
+              NewData[index].show = true
+              NewData[index].checked = false
+              return {
+                data: NewData
+              }
+            }) )         
+          }else return null 
+       })    
+   }
+
    add = () => {
+     const deadTime= this.state.deadTime
      const value= this.state.inputNew.trim()
-     if(value !== ''){ 
+     if(value !== '' && deadTime !== ''){
      this.setState(prevState => {
       return {
         inputNew: '',
-        data: [...prevState.data , {id: prevState.data.lenght + 1, title: prevState.inputNew, checked: false, status: false}]
+        deadTime: '',
+        data: [...prevState.data , {id: prevState.data.lenght + 1,
+                                    title: prevState.inputNew,
+                                    dueTime: prevState.deadTime, 
+                                    checked: false,
+                                    status: false, 
+                                    show: false,
+                                    }]
       } 
-     })
-   }else(alert("please enter character"))
+    })  
+}else(alert("please enter todo or deadtime"))
   }
+
 
   delete = (index) => {
     this.setState(prevState => {
@@ -51,7 +88,7 @@ class App extends React.Component {
 
    edit = (index) => {
      swal({
-       content: "input",
+       content: "input",      
      }).then(res => {  
        let NewState = this.state.data;
        const value = res.trim();
@@ -69,8 +106,9 @@ class App extends React.Component {
    }
   
    handleChecked = (index) => {
+    if(!this.state.data[index].show) {
      this.setState(prevState => {
-       let NewData = [...prevState.data]
+       let NewData = [...prevState.data]      
        NewData[index].checked = true
        return {
          data : NewData
@@ -87,13 +125,13 @@ class App extends React.Component {
        }, 5000);        
      }
      
-     )}
+     )} else return null }
 
 
      
 
   render() {
-     
+   
     return (
      <React.Fragment>    
        <div className="grid-container">
@@ -105,7 +143,8 @@ class App extends React.Component {
                   <div style={{marginLeft:"63px", marginBottom:"20px"}}>
                      <Row>
                          <Input type="text" className="firstinput" placeholder="what do you want to do?" name="inputNew" value={this.state.inputNew} onChange={(e) => HandleChange.call(this, e)}/>
-                         <Button className="btn-add" onClick={this.add} children={<Icon icon={'plus'}/>}/>                   
+                         <Button className="btn-add" onClick={this.add} children={<Icon icon={'plus'}/>}/>   
+                         <Input type="time" step='1' className="firstinput" value={this.state.deadTime}  name='deadTime' onChange={(e) => HandleChange.call(this, e)} />                
                     </Row> 
                   </div>
 
@@ -115,12 +154,13 @@ class App extends React.Component {
                        <ListGroup>
                          
                          {
-                           this.state.data.map((el, index) => {    
+                           this.state.data.map((el, index) => {   
+                             console.log(el.status)
                              if(!el.checked)
                              {                                          
-                             return (<ListGroupItem key={index} className='group-item3'>
+                             return (<ListGroupItem key={index} className={el.show ? 'group-item4': 'group-item3'}>
                                        
-                                        <input type="checkbox" onChange={this.handleChecked.bind(this, index)} checked={el.checked} style={{marginRight:"7px", marginTop:"11px"}}></input>
+                                        <input type="checkbox" onChange={this.handleChecked.bind(this, index)} checked={ el.checked } style={{marginRight:"7px", marginTop:"11px"}}></input>
                                         {el.title}
                                         <Button onClick={this.delete.bind(this, index)} className="float-right" style={{marginLeft:"5px"}} color="danger" children={<Icon icon={'trash'}/>}/>
                                         <Button onClick={this.edit.bind(this, index)} className="float-right" style={{marginLeft:"5px"}} color="info" children={<Icon icon={'pencil'}/>}/>
