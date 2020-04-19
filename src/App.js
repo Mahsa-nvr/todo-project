@@ -27,18 +27,17 @@ class App extends React.Component {
 
    calcuteTime = () => {
      let currentTime = new Date().toTimeString().split(" ")[0]
-     let str1 = currentTime.split(":")[0] * 3600 + currentTime.split(":")[1] * 60 + currentTime.split(":")[2];
-
+     let str1 =   currentTime.split(":")[0] * 3600 + currentTime.split(":")[1] * 60 + currentTime.split(":")[2];
+      
       this.state.data.map((el, index) => {
          let endTime = el.dueTime;
-         let str2= endTime.split(":")[0] * 3600 + endTime.split(":")[1] * 60 + endTime.split(":")[2];
+         let str2 =  endTime.split(":")[0] * 3600 + endTime.split(":")[1] * 60 + endTime.split(":")[2];          
         //  console.log(str1, str2)
          if(str1 === str2){
-            // console.log('equal')
+            console.log('equal')
            return ( this.setState( prevState => {
               let NewData = [...prevState.data]
               NewData[index].show = true
-              NewData[index].checked = false
               return {
                 data: NewData
               }
@@ -49,6 +48,16 @@ class App extends React.Component {
 
    add = () => {
      const deadTime= this.state.deadTime
+
+     if(deadTime.split(":").lenght !== 3) {
+           let arr = deadTime.split(":")
+           arr.push('00')
+           let str3 = arr.join(':')
+           this.setState({
+            deadTime: str3
+           })
+      }
+
      const value= this.state.inputNew.trim()
      if(value !== '' && deadTime !== ''){
      this.setState(prevState => {
@@ -131,7 +140,6 @@ class App extends React.Component {
      
 
   render() {
-   
     return (
      <React.Fragment>    
        <div className="grid-container">
@@ -155,12 +163,12 @@ class App extends React.Component {
                          
                          {
                            this.state.data.map((el, index) => {   
-                             console.log(el.status)
+                            //  console.log(el.dueTime)
                              if(!el.checked)
                              {                                          
                              return (<ListGroupItem key={index} className={el.show ? 'group-item4': 'group-item3'}>
                                        
-                                        <input type="checkbox" onChange={this.handleChecked.bind(this, index)} checked={ el.checked } style={{marginRight:"7px", marginTop:"11px"}}></input>
+                                        <input type="checkbox" onChange={this.handleChecked.bind(this, index)} checked={el.checked} style={{marginRight:"7px", marginTop:"11px"}}></input>
                                         {el.title}
                                         <Button onClick={this.delete.bind(this, index)} className="float-right" style={{marginLeft:"5px"}} color="danger" children={<Icon icon={'trash'}/>}/>
                                         <Button onClick={this.edit.bind(this, index)} className="float-right" style={{marginLeft:"5px"}} color="info" children={<Icon icon={'pencil'}/>}/>
